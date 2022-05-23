@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<f:view locale="#{lenguajeSelector.locale}">
+	<h:head>
+		<ui:insert name="title">
+			<title>Calidad de datos</title>
+		</ui:insert>
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+		<meta
+			content="#{session.maxInactiveInterval};url=#{request.contextPath}/#{beanInicio.is_urlCierreSesion}?alerta=SI" />
+		<h:outputStylesheet library="css" name="wizard.css" />
+		<h:outputStylesheet library="css" name="menu.css" />
+		<h:outputStylesheet library="css" name="style.css" />
+		<h:outputStylesheet library="css" name="header.css" />
+		<h:outputStylesheet library="css" name="bootstrap.min.css" />
+		<h:outputScript library="js" name="config-calendar-language.js" />
+		<h:outputScript library="js" name="alertas.js" />
+		<h:outputScript library="js" name="alertify.js" />
+		<h:outputScript library="js" name="keyfilter.js" />
+		<h:outputStylesheet library="css" name="style.css" />
+		<h:outputStylesheet library="css" name="alertify.min.css" />
+		<h:outputStylesheet library="css" name="alertas.css" />
+		<h:outputScript library="js" name="biometria.js" />
+
+	</h:head>
+	<h:body>
+		<ui:insert name="body" />
+	
+	</h:body>
+</f:view>
+</html>
+

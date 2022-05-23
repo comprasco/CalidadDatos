@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="head">
+		<h:outputScript library="js" name="biometria.js" />
+	</ui:define>
+
+	<p:dialog id="validacionUsurio"
+		header="#{txt_calidad_datos['msg_validarusertitle']}"
+		widgetVar="validacionUsurio" resizable="false" draggable="false"
+		appendTo="@(body)" responsive="true" modal="true" width="550"
+		minWidth="300" minHeight="300" position="center,center"
+		styleClass="box-solid box-danger buscartxt">
+		<div class="row modalContent">
+			<div class="col-xs-12 buscartxt">
+				<p:outputLabel id="validacion_msg"
+					value="#{txt_calidad_datos['msg_validaruser']}" />
+				<h:form id="formularioValidarUser">
+					<p>Para poder guardar los datos ingresados necesitamos validar
+						su identidad</p>
+					<p:commandButton id="validauserjs" styleClass="boton_Volver_Wizard"
+						value="Validar" form="formularioValidarUser"
+						process="formularioValidarUser">
+						<p:ajax update="#{biometrico}"
+							listener="#{beanCorregirInconsistencias.validarUser}"
+							oncomplete="PF('validacionUsurio').hide()" />
+					</p:commandButton>
+				</h:form>
+			</div>
+		</div>
+		<p:separator />
+		<div class="row buscartxt">
+			<div class="col-xs-12 col-sm-6 col-sm-offset-3 ">
+				<p:commandButton value="#{txt_calidad_datos['btn_Cancelar']}"
+					class="btn-rojo btn-gradiente"
+					oncomplete="PF('validacionUsurio').hide()">
+				</p:commandButton>
+			</div>
+		</div>
+	</p:dialog>
+</ui:composition>

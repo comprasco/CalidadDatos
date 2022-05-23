@@ -1,0 +1,18 @@
+.alertify-notifier .ajs-message.ajs-success {
+  text-align: center;
+  color: #155724;
+  background: rgba(212, 237, 218, .9);
+  border-color: #155724 !important;
+}
+.alertify-notifier .ajs-message.ajs-error {
+  text-align: center;
+  color: #721c24;
+  background: rgba(248, 215, 218, .9);
+  border-color: #721c24 !important;
+}
+.alertify-notifier .ajs-message.ajs-custom {
+  text-align: center;
+  color: #004085;
+  background: rgba(204, 229, 255,.9);
+  border-color: #004085 !important;
+}

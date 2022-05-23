@@ -1,0 +1,19 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<div style="display: flex; justify-content: center;">
+		<p:panel class="well" style="width: 80%">
+			<div class="row" style="align-items: center;">
+				<div class="ui-g-1">
+					<img src="#{facesContext.externalContext.requestContextPath}/#{beanCorregirInconsistencias.mensajesDto.mensaje.is_imagen}" alt="Imagen de mensaje"/>
+				</div>
+				<div class="ui-g-11">					
+				<h:outputText
+                value="#{beanCorregirInconsistencias.mensajesDto.mensaje.is_mensaje}" />
+				</div>
+			</div>            
+		</p:panel>
+	</div>
+</ui:composition>

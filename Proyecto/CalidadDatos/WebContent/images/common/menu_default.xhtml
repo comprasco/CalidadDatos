@@ -1,0 +1,29 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" lang="es">
+
+<!-- Static navbar -->
+<h:body style="background-color: white;">
+	<div class="container" style="width: 100%;">
+    	<div class="ui-g">
+        	<div style="background-color: white; margin:0; padding:0; border:2px solid white;" class="ui-md-5">
+        		<p:outputLabel styleClass="msgInfoPr"	value="SUPERINTENDENCIA DE NOTARIADO Y REGISTRO" />
+            </div>
+            <div class="ui-g-2" style="background-color: white; margin:0; padding:0; border:2px solid white;">
+				<p:outputLabel styleClass=" background-color: solid #FFFFFF;" />
+			</div>     
+            <div style="background-color: #EFEFEF; margin:0; padding:0; border:2px solid white;" class="ui-md-5">
+            	<p:outputLabel styleClass="msgInfobv" value="Bienvenido: #{sessionScope.nombreusuario != null ? sessionScope.nombreusuario : ''}" />
+            </div>
+        </div>
+        <div class="ui-g" style="border:2px solid white;">
+            <div style="background-color: #930B0B" class="ui-g-12">
+            	<p:outputLabel styleClass="msgInfo" value="Correción de Matrícula Inconsistente" />
+            </div>
+        </div>
+	</div>
+</h:body>
+</ui:composition>

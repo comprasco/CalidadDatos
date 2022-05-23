@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<div class="headerContainer">
+		<div id="menuContainer" class="tamano">
+			<ui:insert name="menu">
+				<ui:include src="/pages/includes/Menu.xhtml" />
+			</ui:insert>
+		</div>
+		<div id="imagen" class="tamano">
+			<img src="#{facesContext.externalContext.requestContextPath}/images/Logo_Registremos.png" class="imgstyle" alt="" />
+		</div>
+		<div id="infoUsuario" class="tamano">
+
+			<div id="imagen" class="tamano">
+				<img src="#{facesContext.externalContext.requestContextPath}/images/MinisterioJusticia.png" class="imgstyle" alt="" />
+			</div>
+			<span> <h:outputText id="infoUsuario_username"
+					value="#{txt_calidad_datos['lblmensaje']} #{beanCorregirInconsistencias.is_nombreUsuario != null ? beanCorregirInconsistencias.is_nombreUsuario : 'Sin ingresar'}" /></span>
+
+		</div>
+	</div>
+	<div class="banner">
+		<span> <h:outputText
+				value="#{txt_calidad_datos['lblcalidad']}" />
+		</span> <span> <p:separator class="calidadlinea" />
+		</span>
+
+	</div>
+</ui:composition>

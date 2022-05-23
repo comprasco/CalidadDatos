@@ -1,0 +1,557 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="head">
+		<h:outputScript library="js" name="biometria.js" />
+	</ui:define>
+
+	<h:form id="formInconsistencias">
+		<ui:fragment rendered="#{!beanCorregirInconsistencias.ib_usuario}">
+			<div class="row">
+				<div
+					class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-2"
+					id="logo">
+					<br /> <br /> <br />
+					<div
+						class="col-xs-10 col-xs-offset-5 col-sm-6 col-sm-offset-8 col-md-10 col-md-offset-8"
+						id="login">
+						<h1 class="textimg">#{txt_calidad_datos['ingresoUsuario']}</h1>
+						
+						<!-- En caso de YA tener autenticacion CA (ambientes de integracion)-->
+						<h:outputLabel id="lbluserbiometrico1"
+							for="nombreUserIngresado"
+							rendered="#{not empty beanCorregirInconsistencias.is_nombreUsuario}"
+							styleClass="label_rojos textimg"
+							value="#{txt_calidad_datos['usuarioIngresado']}" />
+		
+						<h:outputText id="nombreUserIngresado"
+							rendered="#{not empty beanCorregirInconsistencias.is_nombreUsuario}" 
+							value=" #{beanCorregirInconsistencias.is_nombreUsuario}" />
+						
+						<!-- En caso de NO tener autenticacion CA (ambiente local) -->
+						<h:outputLabel id="lbluserbiometrico2"
+							for="nombreUser"
+							rendered="#{empty beanCorregirInconsistencias.is_nombreUsuario}" 
+							styleClass="label_rojos textimg"
+							value="#{txt_calidad_datos['ingresoUsuarioLabel']}" />
+								
+						<p:inputText id="nombreUser" 
+							rendered="#{empty beanCorregirInconsistencias.is_nombreUsuario}" 
+							styleClass="minTamano border"
+							value="#{beanCorregirInconsistencias.is_nombreUsuario}"
+							name="nombreUser" />
+						<br /> <br />
+						
+						<!-- Continuar ingreso con nombre usuario dado por CA o sin data de CA (ingresada) -->
+						<p:commandButton id="btnValidarUser"
+							value="#{txt_calidad_datos['btn_continuar_ingresar']}"
+							styleClass="boton_ingresar"
+							icon="fa fa-sign-in" >
+							<p:ajax
+								listener="#{beanCorregirInconsistencias.validarUsuarioBiometria}"
+								process="@form" update="formInconsistencias, infoUsuario_username" />
+						</p:commandButton>
+						<p:commandButton id="btnValidarUser1"
+							value="#{txt_calidad_datos['btn_continuar_ingresar']}"
+							styleClass="boton_heddin">
+							<p:ajax
+								listener="#{beanCorregirInconsistencias.validarUsuarioServicios}"
+								process="@form" update="formInconsistencias, infoUsuario_username" />
+						</p:commandButton>
+					</div>
+					<div
+						class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-2 col-md-offset-2"
+						id="footer"></div>
+				</div>
+			</div>
+		</ui:fragment>
+		<ui:fragment rendered="#{beanCorregirInconsistencias.ib_usuario}">
+			<ui:include src="/pages/includes/growl.xhtml" />
+			<p:wizard id="wizardGenerico" widgetVar="wizardGenerico"
+				nextLabel="#{txt_calidad_datos['btnbuscar']}" backLabel="Atrás">
+				<p:tab id="consulta" title="Consultar">
+					<f:facet name="title">
+						<span class="fa fa-search" />
+						<br />
+						<br />
+						<br />
+						<p:outputLabel class="tituloWizard label_rojos tituloWizard1"
+							id="btnbuscar" value="#{txt_calidad_datos['btnbuscar']}" />
+					</f:facet>
+					<p:panel id="panel" class="panelStyle">
+						<div class="row">
+							<div class="col-xs-12  text-center titulo">
+								<span> <h:outputText value="CONSULTAR" />
+								</span>
+							</div>
+						</div>
+	          			<div class="row text-center">
+							<div class="col-xs-10 col-xs-offset-1 col-sm-4  col-sm-offset-0">
+
+								<h:outputLabel id="lblORIP" styleClass="label_rojos"
+									value="#{txt_calidad_datos['lblORIP']}" />
+								<br />
+								<p:selectOneMenu id="orip"
+									value="#{beanCorregirInconsistencias.icid_consultaInconsistenciasDTO.is_idCirculoRegistral}"
+									filter="true" filterMatchMode="contains" styleClass="minTamano">
+									<f:selectItem
+										itemLabel="#{txt_calidad_datos['itemSeleccionarOrip']}"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{beanCorregirInconsistencias.ilcrd_circuloRegistralDTO}"
+										var="circuloRegistral"
+										itemLabel="#{circuloRegistral.is_idCirculo} - #{circuloRegistral.is_nombre}"
+										itemValue="#{circuloRegistral.is_idCirculo}" class="border" />
+									<p:ajax event="itemSelect" process="@this" />
+								</p:selectOneMenu>
+								<p:tooltip id="toolorip" for="lblORIP"
+									class="tooltipGeneral labelsnr"
+									value="#{txt_calidad_datos['toolsORIP']}" position="top" />
+							</div>
+							<div class="col-xs-10 col-xs-offset-1 col-sm-4  col-sm-offset-0">
+								<h:outputLabel id="lblmatricula" styleClass="label_rojos"
+									value="#{txt_calidad_datos['lblnumeroMatricula']}" />
+								<br />
+								<p:tooltip id="toolmatricula" for="lblmatricula"
+									class="tooltipGeneral labelsnr"
+									value="#{txt_calidad_datos['lblNmatricula']}" position="top" />
+								<p:inputText styleClass="minTamano border"
+									value="#{beanCorregirInconsistencias.icid_consultaInconsistenciasDTO.is_numeroMatricula}"
+									id="numeroMatricula" name="numeroMatricula"
+									placeholder="#{txt_calidad_datos['matricula']}">
+									<p:keyFilter regEx="/[0-9]/i" />
+								</p:inputText>
+							</div>
+							<div class="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-0">
+								<h:outputLabel id="lblturno" styleClass="label_rojos"
+									value="#{txt_calidad_datos['lblnumeroTurno']}" />
+								<br />
+								<p:tooltip id="toolturno" for="lblturno"
+									class="tooltipGeneral labelsnr"
+									value="#{txt_calidad_datos['lblNturno']}" position="top" />
+								<p:inputText styleClass="minTamano border"
+									value="#{beanCorregirInconsistencias.icid_consultaInconsistenciasDTO.is_numeroTurno}"
+									id="numeroTurno" name="numeroTurno"
+									placeholder="#{txt_calidad_datos['numeroTurno']}">
+									<p:keyFilter regEx="/[0-9\-]/i" />
+								</p:inputText>
+							</div>
+						</div>
+						<div class="row">
+							<br /> <br />
+						</div>
+						<div class="row">
+							<div
+								class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+								<p:commandButton id="btn_continuar"
+									value="#{txt_calidad_datos['btn_continuar']}"
+									styleClass="boton_continuar">
+									<p:ajax
+										listener="#{beanCorregirInconsistencias.consultaInconsistencias}"
+										onstart="PF('blockUI-Loading').show();" process="@form"
+										update="@form" onsuccess="PF('blockUI-Loading').hide();" />
+								</p:commandButton>
+							</div>
+						</div>
+					</p:panel>
+	 				 <ui:include src="/pages/includes/cargando.xhtml">
+						<ui:param name="IdPanelBloqueado" value="panel" />
+					</ui:include>
+				</p:tab>
+				<!-- Inicio del segundo panel -->
+				<p:tab id="personal" title="Corrección">
+					<f:facet name="title">
+						<br />
+						<img src="#{facesContext.externalContext.requestContextPath}/images/corregir.png" alt="icono de corregir" />
+						<p:outputLabel class="tituloWizard label_rojos tituloWizard1"
+							id="btncorreccion"
+							value="#{txt_calidad_datos['btncorreccion']}" />
+					</f:facet>
+					<p:panel class="buscartxt panelStyle" id="panelInconsistencias">
+						<div class="row">
+							<div class="col-xs-12  text-center titulo">
+
+								<span> <h:outputText value="INCONSISTENCIAS" />
+								</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4">
+								<br />
+								<p:outputLabel id="lblnM"
+									value="#{beanCorregirInconsistencias.is_estado} "
+									styleClass="tipo-letra" />
+								<h:outputText
+									value=" #{beanCorregirInconsistencias.icid_consultaInconsistenciasDTO.is_numeroTurno}"
+									class="input-html" id="id_numT"></h:outputText>
+								<h:outputText
+									value="#{beanCorregirInconsistencias.icid_consultaInconsistenciasDTO.is_numeroMatricula}"
+									class="input-html" id="id_numM"></h:outputText>
+							</div>
+							<div class="col-xs-4">
+								<br />
+								<h:outputText
+									value=" #{icid_consultaInconsistenciasDTO.is_numeroMatricula}"
+									class="input-html" id="id_numeroMatricula"></h:outputText>
+							</div>
+							<div class="col-xs-4">
+								<br />
+								<p:outputLabel id="lblnI" styleClass="tipo-letra"
+									value="#{txt_calidad_datos['lblnumeroInconsistencias']}" />
+								<h:outputText
+									value="#{beanCorregirInconsistencias.ilic_informacionInconsistenciaDTO.size()}"
+									id="id_nuI" />
+							</div>
+						</div>
+						<div class="row text-left">
+							<div class="ui-g-12">
+								<p:dataList id="dataInconsistencias"
+									value="#{beanCorregirInconsistencias.ilic_informacionInconsistenciaDTO}"
+									var="inconsistencias" paginator="true"
+									paginatorAlwaysVisible="false" paginatorPosition="bottom"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink}
+	                             {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+									rows="5" lazy="true" dynamic="true">
+									<div
+										style="display: flex; justify-content: center; width: 97%;">
+										<p:accordionPanel multiple="true" activeIndex="null"
+											style="width: 97%" id="accordionInconsistencias">
+											<p:tab id="tabInconsistencias"
+												title="Número de Inconsistencia: #{inconsistencias.ibi_numeroInconsistencia}">
+
+												<div class="ui-g">
+													<div class="ui-g-6">
+														<h:outputText id="spanSi"
+															value="#{txt_calidad_datos['lbl_Inconsistenciascorregidas']}" />
+														<p:inputSwitch
+															value="#{inconsistencias.is_procesada.equals('C')}"
+															disabled="true" onLabel="Si" offLabel="No" />
+													</div>
+													<div class="ui-g-6">
+														<h:outputLabel id="lblmodulo" styleClass="tipo-letra"
+															value="#{txt_calidad_datos['lblmodulo']}" />
+														<h:outputText value="#{inconsistencias.ii_idModulo}" />
+													</div>
+												</div>
+												<div class="ui-g">
+													<div class="ui-g-6">
+														<h:outputLabel id="lbltabla" styleClass="tipo-letra"
+															value="#{txt_calidad_datos['lbltabla']}" />
+														<h:outputText value="#{inconsistencias.is_tabla}" />
+													</div>
+													<div class="ui-g-6 ">
+														<h:outputLabel id="lbl_campo" styleClass="tipo-letra"
+															value="#{txt_calidad_datos['lbl_campo']}" />
+														<h:outputText value="#{inconsistencias.is_campo}" />
+
+													</div>
+												</div>
+												<div class="ui-g">
+													<div class="ui-g-6">
+														<h:outputLabel id="lbl_tipoincon" styleClass="tipo-letra"
+															value="#{txt_calidad_datos['lbl_tipoincon']}" />
+														<h:outputText
+															value="#{inconsistencias.is_tipoInconsistencia}" />
+													</div>
+													<div class="ui-g-6">
+														<h:outputLabel id="lbl_valocampo" styleClass="tipo-letra"
+															value="#{txt_calidad_datos['lbl_valocampo']}" />
+														<h:outputText value="#{inconsistencias.is_valorActual}" />
+													</div>
+												</div>
+												<div class="ui-g">
+													<div class="ui-g-6">
+														<h:outputLabel id="lbl_nuevodato" styleClass="tipo-letra"
+															value="#{txt_calidad_datos['lbl_nuevodato']}" />
+														<p:spacer height="1" />
+														<h:inputText type="text" class="input-html-form"
+															value="#{inconsistencias.is_nuevoValor}"
+															rendered="#{inconsistencias.im_metadataDto.is_tipoDato == 'CHAR'}"
+															maxlength="#{inconsistencias.im_metadataDto.is_largoCampo}" />
+														<p:inputNumber class="input-html-form" padControl="false"
+															thousandSeparator=""
+															value="#{inconsistencias.is_nuevoValor}"
+															rendered="#{inconsistencias.im_metadataDto.is_tipoDato == 'NUMBER'}"
+															maxlength="#{inconsistencias.im_metadataDto.is_largoCampo}"
+															placeholder="Ingrese Nuevo Valor" />
+														<!-- campo CLOB para consulta de turno -->
+														<p:inputText class="input-html-form" padControl="false"
+															thousandSeparator=""
+															value="#{inconsistencias.is_nuevoValor}"
+															rendered="#{inconsistencias.im_metadataDto.is_tipoDato == 'CLOB'}"
+															maxlength="#{inconsistencias.im_metadataDto.is_largoCampo}"
+															placeholder="Ingrese Nuevo Valor" />
+														<p:calendar id="#{txt_calidad_datos['lbl_calender']}"
+															value="#{inconsistencias.id_fechaNueva}"
+															rendered="#{inconsistencias.im_metadataDto.is_tipoDato == 'TIMESTAMP'}"
+															locale="es" navigator="true" pattern="dd/MM/yyyy"
+															timeZone="America/Bogota" yearRange="1900:2200"
+															showOn="button" mask="true" />
+														<p:calendar id="fechaDate"
+															value="#{inconsistencias.id_fechaNueva}"
+															rendered="#{inconsistencias.im_metadataDto.is_tipoDato == 'DATE'}"
+															locale="es" navigator="true" pattern="dd/MM/yyyy"
+															timeZone="America/Bogota" yearRange="1900:2200"
+															showOn="button" mask="true" />
+														<h:inputText type="text" class="input-html-form"
+															value="#{inconsistencias.is_nuevoValor}"
+															rendered="#{inconsistencias.im_metadataDto.is_tipoDato == 'VARCHAR2'}"
+															maxlength="#{inconsistencias.im_metadataDto.is_largoCampo}" />
+													</div>
+												</div>
+												<p:outputPanel id="panell" class="row">
+													<div class="col-xs-12">
+														<h:outputLabel id="lbl_observaciones"
+															styleClass="tipo-letra"
+															value="#{txt_calidad_datos['lbl_observaciones']}" />
+
+														<p:inputTextarea rows="5" cols="120"
+															value="#{inconsistencias.is_observaciones}"
+															placeholder="* Obligatorio: Por favor indicar el documento y descripción que soporta la actualización del campo “Nuevo Dato”, de la matrícula o turno.">
+														</p:inputTextarea>
+													</div>
+
+												</p:outputPanel>
+
+												<p:commandButton id="validar_us_"
+													styleClass="boton_Volver_Wizard"
+													value="#{txt_calidad_datos['btn_ValidarUser']}"
+													oncomplete="PF('validacionUsurio').show();">
+												</p:commandButton>
+												<ui:include src="/pages/includes/Biometrico.xhtml">
+												</ui:include>
+												<p:commandButton id="btnGuardar"
+													value="#{txt_calidad_datos['btnGuardar']}"
+													action="#{beanCorregirInconsistencias.guardarInconsistencia(inconsistencias)}"
+													update="@form" styleClass="boton_Volver_Wizard" />
+											</p:tab>
+										</p:accordionPanel>
+									</div>
+								</p:dataList>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-4 text-left">
+								<p:commandButton id="btn_atras" styleClass="boton_Volver_Wizard"
+									value="#{txt_calidad_datos['btn_atras']}"
+									oncomplete="PF('confirmacion').show();">
+								</p:commandButton>
+							</div>
+
+							<p:dialog id="confirmacion"
+								header="#{txt_calidad_datos['msg_confirmacion']}"
+								widgetVar="confirmacion" resizable="false" draggable="false"
+								appendTo="@(body)" responsive="true" modal="true" width="550"
+								minWidth="300" minHeight="300" position="center,center"
+								styleClass="box-solid box-danger buscartxt">
+								<h:form id="formularioConfirmacion"
+									enctype="multipart/form-data">
+									<div class="row modalContent">
+										<div class="col-xs-12 buscartxt">
+											<p:outputLabel id="msg_confirmacion1"
+												value="#{txt_calidad_datos['msg_confirmacion1']}" />
+										</div>
+									</div>
+									<p:separator />
+									<div class="row buscartxt">
+										<div class="col-xs-12 col-sm-6 col-sm-offset-3 ">
+											<p:commandButton value="#{txt_calidad_datos['btn_si']}"
+												action="#{beanCorregirInconsistencias.moverWizard(false)}"
+												class="btn-rojo btn-gradiente" />
+
+											<p:commandButton value="#{txt_calidad_datos['btn_no']}"
+												class="btn-rojo btn-gradiente"
+												oncomplete="PF('confirmacion').hide()">
+											</p:commandButton>
+										</div>
+
+									</div>
+								</h:form>
+							</p:dialog>
+							<div class="col-xs-2"></div>
+							<div class="col-xs-4">
+								<p:commandButton class="boton_resultado_wizard"
+									value="#{txt_calidad_datos['btn_continuar']}"
+									oncomplete="PF('llamarfuncion').show();">
+								</p:commandButton>
+							</div>
+						</div>
+						<p:dialog id="consultarUsuario"
+							header="#{txt_calidad_datos['msg_FuncionLlamar']}"
+							widgetVar="consultarUsuario" resizable="false" draggable="false"
+							appendTo="@(body)" responsive="true" modal="true" width="550"
+							minWidth="300" minHeight="400" position="center,center"
+							styleClass="box-solid box-danger buscartxt">
+							<h:form id="formularioConsultarUsuario"
+								enctype="multipart/form-data">
+								<div class="row modalContent"></div>
+								<p:separator />
+								<div class="row buscartxt">
+									<div class="col-xs-12 col-sm-6 col-sm-offset-3 ">
+										<p:commandButton value="#{txt_calidad_datos['btn_no']}"
+											class="btn-rojo btn-gradiente"
+											oncomplete="PF('consultarUsuario').hide()">
+										</p:commandButton>
+										<p:commandButton value="#{txt_calidad_datos['btn_si']}"
+											class="btn-rojo btn-gradiente"
+											oncomplete="PF('consultarUsuario').hide()">
+											<p:ajax onstart="PF('blockUI-Loading').show();"
+												process="@form" onsuccess="PF('blockUI-Loading').hide();" />
+										</p:commandButton>
+
+
+									</div>
+								</div>
+							</h:form>
+						</p:dialog>
+						<p:dialog id="llamarfuncion"
+							header="#{txt_calidad_datos['msg_FuncionLlamar']}"
+							widgetVar="llamarfuncion" resizable="false" draggable="false"
+							appendTo="@(body)" responsive="true" modal="true" width="550"
+							minWidth="300" minHeight="400" position="center,center"
+							styleClass="box-solid box-danger buscartxt">
+							<ui:include src="/pages/includes/CargandoFuncion.xhtml">
+								<ui:param name="IdPanelBloqueado" value="panel" />
+							</ui:include>
+							<h:form id="formularioLlamarfuncion"
+								enctype="multipart/form-data">
+								<div class="row modalContent">
+									<div class="col-xs-12 buscartxt">
+										<p:outputLabel id="msg_confirmacion1"
+											value="#{txt_calidad_datos['msg_Llamarfuncion1']}" />
+									</div>
+								</div>
+								<p:separator />
+								<div class="row buscartxt">
+									<div class="col-xs-12 col-sm-6 col-sm-offset-3 ">
+										<p:commandButton value="#{txt_calidad_datos['btn_no']}"
+											class="btn-rojo btn-gradiente"
+											oncomplete="PF('llamarfuncion').hide()">
+										</p:commandButton>
+										<p:commandButton value="#{txt_calidad_datos['btn_si']}"
+											class="btn-rojo btn-gradiente"
+											oncomplete="PF('llamarfuncion').hide()" update="@form">
+											<p:ajax
+												listener="#{beanCorregirInconsistencias.llamarFuncionValidador()}"
+												process="@form" />
+										</p:commandButton>
+
+
+									</div>
+								</div>
+							</h:form>
+						</p:dialog>
+
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="resultado" title="Paso 3">
+
+					<f:facet name="title">
+						<br />
+						<img src="#{facesContext.externalContext.requestContextPath}/images/resultado.png" alt="icono de resultado" />
+						<p:outputLabel class="tituloWizard label_rojos tituloWizard1"
+							id="btnEstado" value="#{txt_calidad_datos['btnEstado']}" />
+					</f:facet>
+
+					<p:panel class="buscartxt panelStyle">
+						<p:outputPanel
+							rendered="#{!beanCorregirInconsistencias.is_resultado}">
+							<ui:include
+								src="/pages/includes/componentes/panel_estado_busqueda.xhtml" />
+						</p:outputPanel>
+						<p:outputPanel
+							rendered="#{beanCorregirInconsistencias.is_resultado}">
+							<ui:include
+								src="/pages/includes/componentes/resultado_inconsistencia.xhtml" />
+						</p:outputPanel>
+						<div class="row">
+							<div class="col-xs-4">
+								<br />
+								<p:outputLabel id="lblnumeroMatricula"
+									value="#{beanCorregirInconsistencias.is_estado} "
+									styleClass="tipo-letra" />
+								<h:outputText
+									value=" #{beanCorregirInconsistencias.icid_consultaInconsistenciasDTO.is_numeroTurno}"
+									class="input-html" id="id_nT"></h:outputText>
+								<h:outputText
+									value="#{beanCorregirInconsistencias.icid_consultaInconsistenciasDTO.is_numeroMatricula}"
+									class="input-html" id="id_nM"></h:outputText>
+							</div>
+							<div class="col-xs-4">
+								<br />
+								<h:outputText
+									value=" #{icid_consultaInconsistenciasDTO.is_numeroMatricula}"
+									class="input-html" id="id_nuM"></h:outputText>
+							</div>
+							<div class="col-xs-4">
+								<br />
+								<p:outputLabel id="lblnumeroInconsistencias"
+									styleClass="tipo-letra"
+									value="#{txt_calidad_datos['lblnumeroInconsistencias']}" />
+								<h:outputText value=" " class="input-html"></h:outputText>
+								<h:outputText
+									value="#{beanCorregirInconsistencias.ilic_informacionInconsistenciaDTO.size()}"
+									id="id_nI" />
+							</div>
+						</div>
+
+						<p:dataList
+							value="#{beanCorregirInconsistencias.ilic_informacionInconsistenciaDTO}"
+							var="inconsistencias1" paginator="true"
+							paginatorAlwaysVisible="false" paginatorPosition="bottom"
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink}
+	                             {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+							rows="5" lazy="true" dynamic="true">
+							<div style="display: flex; justify-content: center; width: 97%;">
+								<p:accordionPanel multiple="true" activeIndex="null"
+									style="width: 97%">
+									<p:tab
+										title="Número de Inconsistencia: #{inconsistencias1.ibi_numeroInconsistencia}">
+										<div class="row">
+											<div class="col-xs-6">
+												<h:outputLabel styleClass="tipo-letra"
+													value="#{txt_calidad_datos['lbl_tipoincon']}" />
+												<h:outputText
+													value="#{inconsistencias1.is_tipoInconsistencia}" />
+											</div>
+
+											<div class="col-xs-6">
+												<h:outputLabel styleClass="tipo-letra"
+													value="#{txt_calidad_datos['lbl_valocampo']}" />
+												<h:outputText value="#{inconsistencias1.is_valorActual}" />
+											</div>
+										</div>
+										<div class="ui-g">
+											<div class="ui-g-6">
+												<h:outputLabel styleClass="tipo-letra"
+													value="#{txt_calidad_datos['lbl_nuevodato']}" />
+												<p:spacer height="1" />
+												<h:inputText type="text" class="input-html-form"
+													value="#{inconsistencias1.is_nuevoValor}"
+													maxlength="#{inconsistencias1.im_metadataDto.is_largoCampo}"
+													disabled="true" />
+											</div>
+										</div>
+										<p:separator></p:separator>
+									</p:tab>
+								</p:accordionPanel>
+							</div>
+						</p:dataList>
+						<div class="row text-center">
+							<br />
+							<p:commandButton value="#{txt_calidad_datos['btnVolver']}"
+								action="#{beanCorregirInconsistencias.moverWizard(false)}"
+								class="boton_Volver_Wizard" />
+							<p:commandButton value="#{txt_calidad_datos['btn_terminar']}"
+								action="#{beanCorregirInconsistencias.llamarPromotorBachue()}"
+								class="boton_Volver_Wizard" update="@form" />
+						</div>
+					</p:panel>
+				</p:tab>
+			</p:wizard>
+		</ui:fragment>
+	</h:form>
+</ui:composition>

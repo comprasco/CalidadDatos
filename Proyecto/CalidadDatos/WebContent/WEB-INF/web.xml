@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+<!-- 	Implementacion de CA -->
+<security-constraint>
+	 
+ <web-resource-collection>
+ <web-resource-name>SecurePages</web-resource-name>
+ <description>Estas paginas junto con su metodo http solo son accedidas por
+ usuarios autenticados.</description>
+ <url-pattern>/*</url-pattern>
+ <http-method>GET</http-method>
+ <http-method>DELETE</http-method>
+ <http-method>POST</http-method>
+ <http-method>PUT</http-method>
+ <http-method>TRACE</http-method>
+ </web-resource-collection>
+ 
+ <auth-constraint>
+ 
+ <description>Definicion del rol de acceso a la aplicacion.</description>
+<role-name>SamlCalidadDatos</role-name>
+
+ </auth-constraint>
+ 
+ <user-data-constraint>
+ <description>Esto determinta como la informaciones transmitida entre cliente
+ y servidor. Para el caso particular del proyecto el valor es el
+ que se menciona a continuacion</description>
+ 
+ <transport-guarantee>NONE</transport-guarantee>
+ </user-data-constraint>
+ 
+ </security-constraint>
+
+<!--  Metodo de aUtenticación que indica el mecanismo utilizado SAML2 -->
+
+ <login-config>
+ <auth-method>CLIENT-CERT</auth-method>
+ <realm-name>myrealm</realm-name>
+ </login-config>
+ 
+<!--  Rol definido -->
+<security-role>
+<description>Este es el rol definido para permitir el acceso a la aplicacion
+</description>
+<role-name>SamlCalidadDatos</role-name>
+</security-role>
+
+	<welcome-file-list>
+		<welcome-file>pages/corregir/calidad_de_datos.jsf</welcome-file>
+	</welcome-file-list>
+	
+	<mime-mapping>
+		<extension>eot</extension>
+		<mime-type>application/vnd.ms-fontobject</mime-type>
+	</mime-mapping>
+	
+	<mime-mapping>
+		<extension>otf</extension>
+		<mime-type>font/opentype</mime-type>
+	</mime-mapping>
+	
+	<mime-mapping>
+		<extension>ttf</extension>
+		<mime-type>application/x-font-ttf</mime-type>
+	</mime-mapping>
+	
+	<error-page>
+		<error-code>400</error-code>
+		<location>/WEB-INF/400.xhtml</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>403</error-code>
+		<location>/WEB-INF/400.xhtml</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/400.xhtml</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/500.xhtml</location>
+	</error-page>
+	
+	<mime-mapping>
+		<extension>woff</extension>
+		<mime-type>application/x-font-woff</mime-type>
+	</mime-mapping>
+	
+	<mime-mapping>
+		<extension>svg</extension>
+		<mime-type>image/svg+xml</mime-type>
+	</mime-mapping>
+	
+	<context-param>
+		<param-name>primefaces.FONT_AWESOME</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	
+	<session-config>
+		<session-timeout>1200</session-timeout>
+	</session-config>
+
+	<context-param>
+		<param-name>javax.faces.WEBAPP_RESOURCES_DIRECTORY</param-name>
+		<param-value>/resources</param-value>
+	</context-param>
+
+	<!-- Faces Servlet -->
+	<servlet>
+		<servlet-name>Faces-Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- Faces Servlet Mapping -->
+	<servlet-mapping>
+		<servlet-name>Faces-Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+	</servlet-mapping>	
+	<listener>
+ 		<listener-class>
+ 			org.quartz.ee.servlet.QuartzInitializerListener
+ 		</listener-class>
+	</listener>
+</web-app>

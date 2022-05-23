@@ -1,0 +1,9 @@
+build/
+
+.apt_src/
+
+.settings/
+
+
+/bin/
+WebContent/WEB-INF/classes/

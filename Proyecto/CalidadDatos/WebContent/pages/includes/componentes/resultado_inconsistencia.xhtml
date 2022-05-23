@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<div style="display: flex; justify-content: center;">
+		<p:panel header="Resultados">
+					<div class="col-xs-12 col-sm-6 col-sm-offset-3 "></div>
+
+					<p:panelGrid styleClass="buscartxt ">
+						<f:facet name="header" class="ui-panelgrid-header">
+							<p:row>
+								<p:column styleClass="nMatricula">
+									<p:outputLabel
+										value="#{txt_calidad_datos['lbl_Consultado']}" />
+								</p:column>
+								<p:column styleClass="nMatricula resultadoWizard">
+									<h:outputText
+										value="#{beanCorregirInconsistencias.icid_consultaInconsistenciasDTO.is_numeroMatricula}"
+										id="id_numeroMatriculaResultado"></h:outputText>
+									<h:outputText
+										value="#{beanCorregirInconsistencias.icid_consultaInconsistenciasDTO.is_numeroTurno}"
+										id="id_numTResultado"></h:outputText>
+								</p:column>
+
+							</p:row>
+						</f:facet>
+						<!-- Resultados de la correpcion -->
+						<f:facet class="ui-panelgrid-header" name="header">
+							<p:row>
+								<p:column styleClass="nMatricula">
+									<h:outputLabel id="lbl_inconsistencias"
+										value="#{txt_calidad_datos['lbl_CantidadInconsistencias']}" />
+								</p:column>
+								<p:column styleClass="nMatricula">
+									<h:outputText
+										value="#{beanCorregirInconsistencias.ilic_informacionInconsistenciaDTO.size()}"
+										id="id_numeroInconsistenciass" />
+								</p:column>
+							</p:row>
+						</f:facet>
+
+
+						<f:facet class="ui-panelgrid-header" name="header">
+							<p:row>
+								<p:column styleClass="nMatricula">
+									<h:outputLabel id="lbl_resultado"
+										value="#{txt_calidad_datos['lbl_Inconsistenciascorregidas']}" />
+								</p:column>
+								<p:column styleClass="nMatricula">
+									<h:outputLabel
+										value="#{beanCorregirInconsistencias.is_resultadoInconsitencias}" />
+
+								</p:column>
+							</p:row>
+						</f:facet>
+						<f:facet class="ui-panelgrid-header" name="header">
+							<p:row>
+								<p:column styleClass="nMatricula">
+									<h:outputLabel
+										value="#{txt_calidad_datos['lbl_Inconsistenciasnocorregidas']}" />
+								</p:column>
+								<p:column styleClass="nMatricula">
+									<h:outputLabel
+										value="#{beanCorregirInconsistencias.is_inconsistenciasnocorregidas}" />
+								</p:column>
+							</p:row>
+						</f:facet>
+					</p:panelGrid>
+				</p:panel>
+	</div>
+</ui:composition>
